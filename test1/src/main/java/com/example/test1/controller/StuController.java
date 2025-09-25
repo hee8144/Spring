@@ -26,7 +26,7 @@ public class StuController {
         return "/stu-list";
     }
 
-	@RequestMapping(value = "/stu-list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/stu-info.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String login(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -34,6 +34,16 @@ public class StuController {
 		resultMap = StudentService.stuInfo(map);
 		
 		
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/stu-list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String stuList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = StudentService.getStuList(map);
+				
 		return new Gson().toJson(resultMap);
 	}
 }

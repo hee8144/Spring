@@ -25,25 +25,21 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-		<div>
-			<input v-model="keyword" placeholder="검색어">
-			<button @click="fnInfo">검색</button>
-		</div>
         <div>
             <table>
                 <tr>
-                    <th>학번</th>
-                    <th>이름</th>
-                    <th>학과</th>
-                    <th>성별</th>
-                    <th>학년</th>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>조회수</th>
+                    <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
-                    <td>{{item.stuNo}}</td>
-                    <td>{{item.stuName}}</td>
-                    <td>{{item.stuDept}}</td>
-                    <td>{{item.stuGender}}</td>
-                    <td>{{item.stuGrade}}</td>
+                    <td>{{item.boardNo}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.userId}}</td>
+                    <td>{{item.kind}}</td>
+                    <!-- <td><button @click="fnRemove(item.boardNo)">삭제</button></td> -->
                 </tr>
             </table>
         </div>
@@ -66,28 +62,28 @@
                 let self = this;
                 let param = {};
                 $.ajax({
-                    url: "stu-list.dox",
+                    url: "board-list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
+                        console.log(data)
                         self.list = data.list;
                     }
                 });
             },
-            fnInfo: function () {
-                let self = this;
-                let param = {keyword:self.keyword};
-                $.ajax({
-                    url: "stu-info.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-						console.log(data);
-                    }
-                });
-            }
+            // fnRemove(boardNo){
+            //     let self = this;
+            //     let param = {boardNo : boardNo};
+            //     $.ajax({
+            //         url: "board-remove.dox",
+            //         dataType: "json",
+            //         type: "POST",
+            //         data: param,
+            //         success: function (data) {
+            //         }
+            //     });
+            // }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
