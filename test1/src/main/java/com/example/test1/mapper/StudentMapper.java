@@ -15,4 +15,9 @@ public interface StudentMapper {
 	
 	List<Student> stuList(HashMap<String, Object> map);
 	
+	int removeStudent(HashMap<String, Object> map);
+	
+	Student stu(HashMap<String, Object> map);
+	
+	int updateStu(HashMap<String, Object> map);
 }

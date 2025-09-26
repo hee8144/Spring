@@ -9,6 +9,7 @@ public class Student {
 	private String stuDept;
 	private String stuGrade;
 	private String stuGender;
+	private String AVGGRADE;
 	public String getStuNo() {
 		return stuNo;
 	}
@@ -39,6 +40,14 @@ public class Student {
 	public void setStuGender(String stuGender) {
 		this.stuGender = stuGender;
 	}
+	public String getAVGGRADE() {
+		return AVGGRADE;
+	}
+	public void setAVGGRADE(String aVGGRADE) {
+		AVGGRADE = aVGGRADE;
+	}
+	
+	
 	
 	
 }

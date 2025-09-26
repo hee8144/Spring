@@ -13,4 +13,19 @@
 		SELECT *
 		FROM STUDENT
 	</select>
+	
+	<delete id="removeStudent" parameterType="hashmap">
+		DELETE FROM STUDENT WHERE STU_NO = #{stuNo}
+	</delete>
+	
+	<select id="stu" parameterType="hashmap" resultType="com.example.test1.model.Student" >
+		SELECT S.STU_NO, STU_DEPT, STU_NAME , AVG(ENR_GRADE) AS AVG_GRADE FROM STUDENT S
+		LEFT JOIN  ENROL E ON S.STU_NO = E.STU_NO 
+		GROUP BY S.STU_NO , STU_NAME, STU_DEPT 
+		HAVING S.STU_NO = #{stuNo}
+	</select>
+	
+	<update id="updateStu" parameterType="hashmap">
+		UPDATE STUDENT SET STU_DEPT = #{stuDept} WHERE STU_NO = #{stuNo}
+	</update>
 </mapper>
