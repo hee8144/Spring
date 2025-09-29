@@ -38,6 +38,20 @@
            <div>
                 주소: <input v-model="addr"> <button @click="fnAddr">주소검색</button>
            </div>
+           <div>
+                문자인증 <input type="text" v-model="inputNum" :placeholder="timer">
+                
+                <template v-if="!smsFlg">
+                    <button @click="fnSms ">인증번호 전송</button>
+                </template>
+                <template v-else>
+                    <button>인증</button>
+                </template>
+           </div>
+           <div>
+                {{timer}}
+                <button @click="fnTimer">시작</button>
+           </div>
         </div>
 
     </div>
@@ -59,6 +73,9 @@
                 pwdRegex:/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
                 idRegex:/^(?=.*[a-z0-9])[a-z0-9]{3,16}$/,
                 addr:"",
+                inputNum:"",
+                smsFlg:false,
+                timer:180,
             };
         },
         methods: {
@@ -102,6 +119,39 @@
             fnResult(roadFullAddr, addrDetail,zipNo){
                 let self = this;
                 self.addr = roadFullAddr;
+            },
+            fnSms(){
+                let self=this;
+                let param = {};
+                $.ajax({
+                    url: "/send-one",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        if(data.res.statusCode=="2000"){
+                            alert("문자전송완료");
+                            self.smsFlg=true;
+                            self.fnTimer();
+                        }else{
+                            alert("잠시 후 다시 시도해주세요");
+                        }
+                    }
+                });
+                
+            },
+            fnTimer(){
+                let self=this;
+
+                let interval = setInterval(() => {
+                    if(self.timer==0){
+                        clearInterval(interval);
+                        alert("시간이만료되었습니다.")
+                    }else{
+                        self.timer--;
+                    }
+                }, 1000);
             }
         }, // methods
         mounted() {
