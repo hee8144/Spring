@@ -56,7 +56,9 @@
                     <td>{{item.userId}}</td>
                     <td>{{item.kind}}</td>
                     <td>{{item.cdate}}</td>
-                    <td><button @click="fnRemove(item.boardNo)">삭제</button></td>
+                    <td>
+                        <button v-if="item.userId == sessionId || sessionStatus == 'A'" @click="fnRemove(item.boardNo)">삭제</button>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -75,7 +77,9 @@
 				keyword:"",
                 list:[],
                 kind:"",
-                sort:"BOARDNO"
+                sort:"BOARDNO",
+                sessionId : "${sessionId}",
+                sessionStatus : "${sessionStatus}"
             };
         },
         methods: {
@@ -86,7 +90,6 @@
                     kind : self.kind,
                     sort : self.sort
                 };
-                console.log(self.sort);
                 
                 $.ajax({
                     url: "board-list.dox",
