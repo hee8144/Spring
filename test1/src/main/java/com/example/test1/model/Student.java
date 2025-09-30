@@ -10,6 +10,7 @@ public class Student {
 	private String stuGrade;
 	private String stuGender;
 	private String AVGGRADE;
+	private String TOTALAVG;
 	public String getStuNo() {
 		return stuNo;
 	}
@@ -47,7 +48,12 @@ public class Student {
 		AVGGRADE = aVGGRADE;
 	}
 	
-	
+	public String TOTALAVG() {
+		return TOTALAVG;
+	}
+	public void TOTALAVG(String TOTALAVG) {
+		AVGGRADE = TOTALAVG;
+	}
 	
 	
 }

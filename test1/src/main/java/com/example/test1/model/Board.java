@@ -12,6 +12,9 @@ public class Board {
 	private String cdate;
 	private String cnt;
 	private String favorite;
+	private String commentCnt;
+	private String MENTID;
+	private String MENT;
 	public String getUserId() {
 		return userId;
 	}
@@ -66,5 +69,13 @@ public class Board {
 	public void setFavorite(String favorite) {
 		this.favorite = favorite;
 	}
+	
+	public String getCommentCnt() {
+		return commentCnt;
+	}
+	public void setComent(String commentCnt) {
+		this.commentCnt = commentCnt;
+	}
+	
 	
 }

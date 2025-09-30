@@ -4,14 +4,28 @@
 
 <mapper namespace="com.example.test1.mapper.BoardMapper">
 	<select id="boardList" parameterType="hashmap" resultType="com.example.test1.model.Board">
-		SELECT B.* , TO_CHAR(CDATETIME , 'YYYY-MM-DD') AS CDATE
-		FROM TBL_BOARD B WHERE 1=1 
+		SELECT B.* , TO_CHAR(CDATETIME , 'YYYY-MM-DD') AS CDATE , NVL(COMENT,0) as commentCnt FROM TBL_BOARD B
+		LEFT JOIN (SELECT BOARDNO, count(*)as COMENT FROM TBL_COMMENT 
+		GROUP BY BOARDNO
+ 		) C ON B.BOARDNO = C.BOARDNO 
+ 		WHERE 1=1
 		<if test="kind !='' and kind != null">
 			AND KIND = #{kind}
 		</if>
+		<if test="keywordSort == 'all'">
+			AND TITLE LIKE '%'|| #{keyword} ||'%' OR USERID LIKE '%'|| #{keyword} ||'%'
+			
+		</if>
 		
+		<if test="keywordSort =='title'">
+			AND TITLE LIKE '%'|| #{keyword} ||'%'
+		</if>
+		
+		<if test="keywordSort == 'userId'">
+			AND USERID LIKE '%'|| #{keyword} ||'%'
+		</if>
 		<if test="sort =='BOARDNO'">
-			ORDER BY BOARDNO ASC
+			ORDER BY B.BOARDNO ASC
 		</if>
 		
 		<if test="sort =='TITLE'">
@@ -23,8 +37,9 @@
 		</if>
 		
 		<if test="boradNo !='' and boardNo !=null">
-			AND BOARDNO = #{boardNo}
+			AND B.BOARDNO = #{boardNo}
 		</if>
+		
 		
 	</select>
 	
@@ -39,6 +54,21 @@
 	</insert>
 	
 	<select id="boardInfo" parameterType="hashmap" resultType="com.example.test1.model.Board">
-		SELECT B.* , TO_CHAR(CDATETIME , 'YYYY-MM-DD') AS CDATE  FROM TBL_BOARD B WHERE BOARDNO = #{boardNo}
+		SELECT B.* , TO_CHAR(B.CDATETIME , 'YYYY-MM-DD') AS CDATE  FROM TBL_BOARD B WHERE BOARDNO = #{boardNo}
 	</select>
+	
+	<select id="selectCommentList" parameterType="hashmap" resultType="com.example.test1.model.Comment">
+	
+		SELECT C.* 	,U.NICKNAME
+		FROM TBL_COMMENT C 
+		INNER JOIN TBL_USER U ON C.USERID = U.USERID
+		WHERE C.BOARDNO = #{boardNo}
+	</select>
+	
+	<delete id="removeComment" parameterType="hashmap">
+		DELETE FROM TBL_COMMENT
+		WHERE COMMENTNO = #{commentNo} 
+		
+	</delete> 
+	
 </mapper>

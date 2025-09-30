@@ -74,4 +74,22 @@ public class MemberService {
 		
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> addmember(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String , Object> resultMap = new HashMap<String , Object>();
+	
+		int member = memberMapper.addmember(map);
+		
+		if(member < 1 ) {
+			resultMap.put("result", "success");
+			
+		}else {
+			resultMap.put("result", "fail");
+			
+		}
+		
+		return resultMap;
+	}
+	
 }

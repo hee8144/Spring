@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
-        table, tr, td, th{
+        #board table, tr, td, th{
             border : 1px solid black;
             border-collapse: collapse;
             padding : 5px 10px;
@@ -20,13 +20,14 @@
         tr:nth-child(even){
             background-color: azure;
         }
+
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
 
-        <table>
+        <table id="board">
             <tr>
                 <th>번호</th>
                 <td>{{boardNo}}</td>
@@ -52,6 +53,23 @@
                 <td>{{info.cdate}}</td>
             </tr>
         </table>
+
+        <table id="comment">
+            <tr v-for="item in comment">
+                <th>{{item.nickName}}</th>
+                <td>{{item.contents}}</td>
+                <td><button @click="fnRemove(item.commentNo)">삭제</button></td>
+                <td><button>수정</button></td>
+            </tr>
+        </table>
+
+        <table id="input">
+            <th>댓글입력</th>
+            <td>
+                <textarea cols="50" rows="5" ></textarea>
+            </td>
+            <td><button>저장</button></td>
+        </table>
     </div>
 </body>
 </html>
@@ -62,7 +80,8 @@
             return {
                 // 변수 - (key : value)
                 boardNo:"${boardNo}",
-                info:{}
+                info:{},
+                comment:{},
             };
         },
         methods: {
@@ -78,7 +97,25 @@
                     success: function (data) {
                         
                         self.info=data.info;
-                        console.log(data.info);
+                        self.comment = data.commentList;
+                        console.log(data.commentList);
+                        
+                    }
+                });
+            },
+            fnRemove(commentNo){
+                let self = this;
+                let param = {commentNo : commentNo};
+                if(!confirm("삭제하시겠습니까?")){
+                    return;
+                }
+                $.ajax({
+                    url: "commnet-remove.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert("삭제되었습니다.")
                         
                     }
                 });

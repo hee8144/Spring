@@ -28,6 +28,15 @@
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div>
             <div>
+                <select v-model="keywordSort">
+                    <option value="all">:: 전체 ::</option>
+                    <option value="title">:: 제목 ::</option>
+                    <option value="userId">:: 작성자 ::</option>
+                </select>
+                <input type="text" v-model="keyword">
+                <button @click="fnList">검색</button>
+            </div>
+            <div>
                 <select name="" v-model="kind" @change="fnList">
                     <option value="">:: 전체 ::</option>
                     <option value="1">:: 공지사항 ::</option>
@@ -52,7 +61,10 @@
                 </tr>
                 <tr v-for="item in list">
                     <td>{{item.boardNo}}</td>
-                    <td><a href="javascript:;" @click="fnview(item.boardNo)">{{item.title}}</a></td>
+                    <td>
+                        <a href="javascript:;" @click="fnview(item.boardNo)">{{item.title}} </a>
+                        <span v-if="item.commentCnt != 0" style="color: red;">[{{item.commentCnt}}]</span>
+                    </td>
                     <td>{{item.userId}}</td>
                     <td>{{item.kind}}</td>
                     <td>{{item.cdate}}</td>
@@ -79,7 +91,9 @@
                 kind:"",
                 sort:"BOARDNO",
                 sessionId : "${sessionId}",
-                sessionStatus : "${sessionStatus}"
+                sessionStatus : "${sessionStatus}",
+                keywordSort:"all"
+
             };
         },
         methods: {
@@ -88,7 +102,9 @@
                 let self = this;
                 let param = {
                     kind : self.kind,
-                    sort : self.sort
+                    sort : self.sort,
+                    keywordSort: self.keywordSort,
+                    keyword:self.keyword
                 };
                 
                 $.ajax({

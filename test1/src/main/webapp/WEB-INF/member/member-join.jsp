@@ -20,6 +20,9 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        .phone{
+            width: 40px;
+        }
     </style>
 </head>
 <body>
@@ -29,28 +32,63 @@
         <div>
 
             <div>
-                <label for=""> 아이디 : <input type="text" v-model="id"></label>
+                 <input v-if="!idFlg" v-model="id">
+                <input v-else v-model="id" disabled>
                 <button @click="fnCheck">중복체크</button>
             </div>
+
             <div>
                 <label for=""> 비밀번호 : <input type="password" v-model="pwd"></label>
             </div>
+
+            <div>
+                <label for=""> 비밀번호확인 : <input type="password" v-model="pwd2"></label>
+            </div>
+
+            <div>
+                 이름 : <input type="text" v-model="name">
+            </div>
+
            <div>
-                주소: <input v-model="addr"> <button @click="fnAddr">주소검색</button>
+                주소: <input v-model="addr" disabled> <button @click="fnAddr">주소검색</button>
            </div>
+
            <div>
+                핸드폰 번호 : 
+                <input type="text" maxlength="3" class="phone" v-model="phone1">-
+                <input type="text" maxlength="4" class="phone" v-model="phone2">-
+                <input type="text" maxlength="4" class="phone" v-model="phone3">
+           </div>
+
+           <div v-if="!joinFlg">
                 문자인증 <input type="text" v-model="inputNum" :placeholder="timer">
                 
                 <template v-if="!smsFlg">
                     <button @click="fnSms ">인증번호 전송</button>
                 </template>
                 <template v-else>
-                    <button>인증</button>
+                    <button @click="fnSmsAuth">인증</button>
                 </template>
            </div>
+           <div v-else style="color:red">
+                문자인증이 완료되었습니다.
+           </div>
+
            <div>
-                {{timer}}
-                <button @click="fnTimer">시작</button>
+                성별 : 
+                <label for=""><input type="radio" v-model="gender" value="M">남자</label> 
+                <label for=""><input type="radio" v-model="gender" value="F">여자</label> 
+           </div>
+           
+           <div>
+                <select name="" id="" v-model="status">
+                    <option value="A">관리자</option>
+                    <option value="S">판매자</option>
+                    <option value="C">소비자</option>
+                </select>
+           </div>
+           <div>
+                <button @click="fnJoin">회원가입</button>
            </div>
         </div>
 
@@ -70,26 +108,83 @@
                 // 변수 - (key : value)
                 id:"",
                 pwd:"",
-                pwdRegex:/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
-                idRegex:/^(?=.*[a-z0-9])[a-z0-9]{3,16}$/,
+                pwd2:"",
+                pwdRegex:/^.*(?=^.{6,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
+                idRegex:/^(?=.*[a-z0-9])[a-z0-9]{5,16}$/,
                 addr:"",
+                name:"",
+                phone1:"",
+                phone2:"",
+                phone3:"",
+                gender:"M",
+                status:"A",
+
                 inputNum:"",
                 smsFlg:false,
-                timer:180,
+                timer:"",
+                count:180,
+                joinFlg : false,
+                ranStr:"",
+                idFlg:false,
+
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnJoin: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    id:self.id,
+                    pwd:self.pwd,
+                    name:self.name,
+                    addr:self.addr,
+                    phone:self.phone1+"-"+self.phone2+"-"+self.phone3,
+                    gender:self.gender,
+                    status:self.status,
+                };
+                if(!idFlg){
+                    alert("중복체크를 해주세요");
+                    return;
+                }
+                
+                if(self.pwd != self.pwd2 ){
+                    alert("비밀번호가 다릅니다.");
+                    return;
+                }
+
+                if(!self.pwdRegex.test(self.pwd)){
+                    alert("비밀번호는 6자리 이상 특수문자 1개 포합입니다.");
+                    return;
+                }
+
+                if(self.name ==""){
+                    alert("이름을 입력해주세요");
+                    return;
+                }
+
+                if(self.addr == ""){
+                    alert("주소를 입력해주세요");
+                    return;
+                }
+
+                if(self.phone1.length < 3 || self.phone2.length < 4 || self.phone3.length<3){
+                    alert('핸드폰번호를 입력해주세요');
+                    return;
+                }
+
+                if(!self.joinFlg){
+                    alert("문자 인증을 실행해주세요");
+                    return;
+                }
+
                 $.ajax({
-                    url: "",
+                    url: "/member/add.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        alert("회원가입되었습니다.");
+                        location.href="/member/login.do";
                     }
                 });
             },
@@ -110,6 +205,7 @@
                     data: param,
                     success: function (data) {
                         alert(data.msg);
+                        self.idFlg=true;
                     }
                 }); 
             },
@@ -132,6 +228,7 @@
                         console.log(data);
                         if(data.res.statusCode=="2000"){
                             alert("문자전송완료");
+                            self.ranStr = data.ranStr;
                             self.smsFlg=true;
                             self.fnTimer();
                         }else{
@@ -145,13 +242,29 @@
                 let self=this;
 
                 let interval = setInterval(() => {
-                    if(self.timer==0){
+                    if(self.count==0){
                         clearInterval(interval);
                         alert("시간이만료되었습니다.")
                     }else{
-                        self.timer--;
+                        let min = parseInt(self.count / 60); 
+                        let sec = self.count % 60;
+                        
+                        min = min < 10 ? "0" + min : min;
+                        sec = sec < 10 ? "0" + sec : sec;
+                        self.timer = min+ " : "  + sec;
+                        
+                        self.count--;
                     }
                 }, 1000);
+            },
+            fnSmsAuth(){
+                let self = this;
+                if(self.ranStr == self.inputNum){
+                    alert("문자인증이 완료되었습니다.");
+                    self.joinFlg = true;
+                } else {
+                    alert("문자인증에 실패했습니다.");
+                }
             }
         }, // methods
         mounted() {
