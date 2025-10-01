@@ -15,10 +15,18 @@ public interface BoardMapper {
 	int removeBoard(HashMap<String, Object> map);
 	// 게시글 목록
 	List<Board> boardList(HashMap<String, Object> map);
+	
+	//게시글 전체 개수
+	
+	int boardCnt(HashMap<String, Object> map);
 	// 게시글 등록
 	int insertBoard(HashMap<String, Object> map);
 	
 	Board boardInfo(HashMap<String, Object> map);
+	
+	//조회수 증가
+	
+	int updateCnt(HashMap<String, Object> map);
 	
 	//댓글 목록
 	
@@ -26,4 +34,9 @@ public interface BoardMapper {
 	
 	//댓글 삭제
 	int removeComment(HashMap<String, Object> map);
+	
+	//댓글 작성
+	
+	int insertComment(HashMap<String, Object> map);
+	
 }

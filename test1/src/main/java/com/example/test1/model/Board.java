@@ -10,6 +10,7 @@ public class Board {
 	private String kind;
 	private String contents;
 	private String cdate;
+	private String chour;
 	private String cnt;
 	private String favorite;
 	private String commentCnt;

@@ -42,16 +42,17 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <!-- <td><textarea v-model="contents" cols="50" rows="20"></textarea></td> -->
-                    <td>
+                    <td><textarea v-model="contents" cols="50" rows="20"></textarea></td>
+                    <!-- <td>
                         <div style="height: 150px;" id="editor"></div>
-                    </td>
+                    </td> -->
                     
                 </tr>
             </table>
             <div>
                 <button @click="fnboardAdd">저장</button>
             </div>
+            
         </div>
     </div>
 </body>
@@ -63,7 +64,7 @@
             return {
                 // 변수 - (key : value)
                 title:"",
-                userId:"",
+                userId:"${sessionId}",
                 contents:"",
                 sessionId:"${sessionId}"
             };
@@ -116,7 +117,7 @@
                 alert("로그인 후 이용해 주세요");
                 location.href='/member/login.do'
             }
-            self.mounted();
+            // self.mounted();
         }
     });
 

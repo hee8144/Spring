@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class Comment {
 	
+	private String boardNo;
 	private String commentNo;
 	private String contents;
 	private String userId;

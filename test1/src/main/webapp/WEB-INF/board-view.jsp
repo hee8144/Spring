@@ -13,7 +13,7 @@
             border-collapse: collapse;
             padding : 5px 10px;
             text-align: center;
-        }
+        }   
         th{
             background-color: beige;
         }
@@ -54,6 +54,8 @@
             </tr>
         </table>
 
+        <hr>
+
         <table id="comment">
             <tr v-for="item in comment">
                 <th>{{item.nickName}}</th>
@@ -63,12 +65,14 @@
             </tr>
         </table>
 
+        <hr>
+
         <table id="input">
             <th>댓글입력</th>
             <td>
-                <textarea cols="50" rows="5" ></textarea>
+                <textarea cols="50" rows="5" v-model="contents"></textarea>
             </td>
-            <td><button>저장</button></td>
+            <td><button @click="fnAddComment">저장</button></td>
         </table>
     </div>
 </body>
@@ -82,6 +86,8 @@
                 boardNo:"${boardNo}",
                 info:{},
                 comment:{},
+                userId:"${sessionId}",
+                contents:""
             };
         },
         methods: {
@@ -90,7 +96,7 @@
                 let self = this;
                 let param = {boardNo : self.boardNo};
                 $.ajax({
-                    url: "board-view.dox",
+                    url: "/board-view.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
@@ -110,16 +116,38 @@
                     return;
                 }
                 $.ajax({
-                    url: "commnet-remove.dox",
+                    url: "/commnet-remove.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         alert("삭제되었습니다.")
-                        
+                        self.fnInfo();
+                    }
+                });
+            },
+            fnAddComment(){
+
+                let self = this;
+                let param = {
+                     boardNo: self.boardNo,
+                     contents:self.contents,
+                     userId:self.userId 
+                    };
+                $.ajax({
+                    url: "/commnet-add.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.fnInfo();
+                        self.contents=""
+                        alert(data.msg)
+
                     }
                 });
             }
+
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

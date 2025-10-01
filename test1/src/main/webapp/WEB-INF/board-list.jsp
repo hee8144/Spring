@@ -21,6 +21,15 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        #index{
+            margin-right: 5px;
+            text-decoration: none;
+
+        }
+        .active{
+            color: black;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +45,15 @@
                 <input type="text" v-model="keyword">
                 <button @click="fnList">검색</button>
             </div>
+
+            <div>
+                <select v-model="pageSize" @change="fnList">
+                    <option value="5">5개씩</option>
+                    <option value="10">10개씩</option>
+                    <option value="20">20개씩</option>
+                </select>
+            </div>
+
             <div>
                 <select name="" v-model="kind" @change="fnList">
                     <option value="">:: 전체 ::</option>
@@ -48,6 +66,7 @@
                     <option value="BOARDNO">:: 번호순 ::</option>
                     <option value="TITLE">:: 제목순 ::</option>
                     <option value="CNT">:: 조회순 ::</option>
+                    <option value="CDATE">:: 시간순 ::</option>
                 </select>
             </div>
             <table>
@@ -66,8 +85,11 @@
                         <span v-if="item.commentCnt != 0" style="color: red;">[{{item.commentCnt}}]</span>
                     </td>
                     <td>{{item.userId}}</td>
-                    <td>{{item.kind}}</td>
-                    <td>{{item.cdate}}</td>
+                    <td>{{item.cnt}}</td>
+                    <td>
+                        <span>{{item.cdate}}</span>
+                        <span v-if="Date().date == item.cdate">{{item.chour}}</span>
+                    </td>
                     <td>
                         <button v-if="item.userId == sessionId || sessionStatus == 'A'" @click="fnRemove(item.boardNo)">삭제</button>
                     </td>
@@ -75,9 +97,24 @@
             </table>
         </div>
         <div>
+            <a href="javascript:;" @click="fnMove(-1)">
+                <span v-if="page > 1">
+                    ◀
+                </span>
+            </a>
+            <a id="index" href="javascript:;" v-for="num in index" @click="fnchange(num)">
+                <span :class="{active : page == num}">{{num}}</span>
+            </a>
+            <a href="javascript:;" @click="fnMove(+1)">
+                <span v-if="page != index ">▶</span>
+            </a>
+        </div>
+        <div>
             <a href="board-add.do"><button>글쓰기</button></a>
         </div>
-    </div>
+
+
+    </div>  
 </body>
 </html>
 
@@ -86,14 +123,18 @@
         data() {
             return {
                 // 변수 - (key : value)
-				keyword:"",
                 list:[],
+				keyword:"",
                 kind:"",
-                sort:"BOARDNO",
+                sort:"CDATE",
+                keywordSort:"all",
+
+                pageSize:5, // 한페이지에 출력할 개수
+                page:1,//현재페이지
+                index:0,//몇페이지까지 존재하는지
+                
                 sessionId : "${sessionId}",
                 sessionStatus : "${sessionStatus}",
-                keywordSort:"all"
-
             };
         },
         methods: {
@@ -104,7 +145,10 @@
                     kind : self.kind,
                     sort : self.sort,
                     keywordSort: self.keywordSort,
-                    keyword:self.keyword
+                    keyword:self.keyword,
+
+                    pageSize:self.pageSize,
+                    page : (self.page-1) * self.pageSize,
                 };
                 
                 $.ajax({
@@ -115,6 +159,7 @@
                     success: function (data) {
                         console.log(data)
                         self.list = data.list;
+                        self.index = Math.ceil(data.cnt/ self.pageSize);
                         
                     }
                 });
@@ -135,12 +180,27 @@
              },
             fnview(boardNo){
                 pageChange("board-view.do",{boardNo : boardNo});
-            }
+            },
+            fnchange(num){
+                let self = this;
+                self.page=num;
+                console.log(self.page);
+                
+                self.fnList();
+            },
+            fnMove(num){
+                let self=this;
+                self.page +=  num;
+                self.fnList();
+            },
+            
+
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
             self.fnList();
+            
         }
     });
 

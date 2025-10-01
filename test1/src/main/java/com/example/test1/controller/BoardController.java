@@ -26,7 +26,7 @@ public class BoardController {
 
     BoardController(StuController stuController) {
         this.stuController = stuController;
-    }	
+    }		
 
 	@RequestMapping("/board-list.do") 
     public String login(Model model) throws Exception{
@@ -43,6 +43,7 @@ public class BoardController {
 	@RequestMapping("/board-view.do") 
     public String view(HttpServletRequest request, Model model,@RequestParam HashMap<String, Object> map) throws Exception{
 		request.setAttribute("boardNo",map.get("boardNo"));
+		
         return "/board-view";
     }
 	
@@ -84,7 +85,6 @@ public class BoardController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = BoardService.getBoardInfo(map);
-				
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -98,4 +98,13 @@ public class BoardController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/commnet-add.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String commnetAdd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = BoardService.addComment(map);
+				
+		return new Gson().toJson(resultMap);
+	}
 }

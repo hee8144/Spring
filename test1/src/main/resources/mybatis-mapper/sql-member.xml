@@ -4,11 +4,14 @@
 
 <mapper namespace="com.example.test1.mapper.BoardMapper">
 	<select id="boardList" parameterType="hashmap" resultType="com.example.test1.model.Board">
-		SELECT B.* , TO_CHAR(CDATETIME , 'YYYY-MM-DD') AS CDATE , NVL(COMENT,0) as commentCnt FROM TBL_BOARD B
+		SELECT B.* , DECODE(
+    		TO_CHAR(CDATETIME , 'YYYY-MM-DD') ,TO_CHAR(SYSDATE,'YYYY-MM-DD') ,TO_CHAR(CDATETIME , 'HH24:MI:SS'), TO_CHAR(CDATETIME , 'YYYY-MM-DD')
+			) AS CDATE , NVL(COMENT,0) as commentCnt , TO_CHAR(CDATETIME, 'HH24:MI:SS') AS CHOUR FROM TBL_BOARD B
 		LEFT JOIN (SELECT BOARDNO, count(*)as COMENT FROM TBL_COMMENT 
-		GROUP BY BOARDNO
- 		) C ON B.BOARDNO = C.BOARDNO 
+			GROUP BY BOARDNO
+ 			) C ON B.BOARDNO = C.BOARDNO 
  		WHERE 1=1
+ 		
 		<if test="kind !='' and kind != null">
 			AND KIND = #{kind}
 		</if>
@@ -24,6 +27,11 @@
 		<if test="keywordSort == 'userId'">
 			AND USERID LIKE '%'|| #{keyword} ||'%'
 		</if>
+		
+		<if test="sort =='CDATE'">
+			ORDER BY CDATETIME DESC
+		</if>
+		
 		<if test="sort =='BOARDNO'">
 			ORDER BY B.BOARDNO ASC
 		</if>
@@ -40,8 +48,33 @@
 			AND B.BOARDNO = #{boardNo}
 		</if>
 		
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
 		
 	</select>
+	
+	<select id="boardCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)  
+		FROM TBL_BOARD B 
+ 		WHERE 1=1
+ 		
+		<if test="kind !='' and kind != null">
+			AND KIND = #{kind}
+		</if>
+		<if test="keywordSort == 'all'">
+			AND TITLE LIKE '%'|| #{keyword} ||'%' OR USERID LIKE '%'|| #{keyword} ||'%'
+			
+		</if>
+		
+		<if test="keywordSort =='title'">
+			AND TITLE LIKE '%'|| #{keyword} ||'%'
+		</if>
+		
+		<if test="keywordSort == 'userId'">
+			AND USERID LIKE '%'|| #{keyword} ||'%'
+		</if>
+	
+	</select>
+	
 	
 	<delete id="removeBoard" parameterType="hashmap">
 		DELETE FROM TBL_BOARD
@@ -57,12 +90,18 @@
 		SELECT B.* , TO_CHAR(B.CDATETIME , 'YYYY-MM-DD') AS CDATE  FROM TBL_BOARD B WHERE BOARDNO = #{boardNo}
 	</select>
 	
+	<update id="updateCnt" parameterType="hashmap">
+		UPDATE TBL_BOARD SET CNT = CNT+1 WHERE BOARDNO = #{boardNo}
+	
+	</update>
+	
 	<select id="selectCommentList" parameterType="hashmap" resultType="com.example.test1.model.Comment">
 	
 		SELECT C.* 	,U.NICKNAME
 		FROM TBL_COMMENT C 
 		INNER JOIN TBL_USER U ON C.USERID = U.USERID
 		WHERE C.BOARDNO = #{boardNo}
+		ORDER BY C.CDATETIME ASC
 	</select>
 	
 	<delete id="removeComment" parameterType="hashmap">
@@ -70,5 +109,10 @@
 		WHERE COMMENTNO = #{commentNo} 
 		
 	</delete> 
+	
+	<insert id="insertComment" parameterType="hashmap">
+		INSERT INTO TBL_COMMENT VALUES(COMMENT_SEQ.NEXTVAL , #{boardNo}, #{contents}, #{userId}, '0' , NULL , SYSDATE , SYSDATE)
+	
+	</insert>
 	
 </mapper>
