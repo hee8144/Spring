@@ -1,17 +1,21 @@
 package com.example.test1.dao;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.test1.controller.AreaController;
 import com.example.test1.controller.StuController;
 import com.example.test1.mapper.MemberMapper;
 import com.example.test1.model.Member;
 
 @Service
 public class MemberService {
+
+    private final AreaController areaController;
 
     private final StuController stuController;
 	
@@ -21,8 +25,9 @@ public class MemberService {
 	@Autowired
 	HttpSession session;
 
-    MemberService(StuController stuController) {
+    MemberService(StuController stuController, AreaController areaController) {
         this.stuController = stuController;
+        this.areaController = areaController;
     }
 	public HashMap<String , Object> login(HashMap<String , Object> map){
 		
@@ -80,9 +85,11 @@ public class MemberService {
 		HashMap<String , Object> resultMap = new HashMap<String , Object>();
 	
 		int member = memberMapper.addmember(map);
+		List<Member> fileList = memberMapper.insertUserImg(map);
 		
 		if(member < 1 ) {
 			resultMap.put("result", "success");
+			resultMap.put("fileList", fileList);
 			
 		}else {
 			resultMap.put("result", "fail");

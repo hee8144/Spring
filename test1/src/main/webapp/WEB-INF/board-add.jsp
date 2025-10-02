@@ -38,7 +38,14 @@
                 </tr>
                 <tr>
                     <th>작성자</th>
-                    <td><input v-model="userId"></td>
+                    <td>{{userId}}</td>
+                </tr>
+                <tr>
+                    <th>파일첨부</th>
+                    <td>
+                        <input type="file" id="file1" name="file1" accept=".jpg , .png">
+                    </td>
+                    <!-- <button @click="fnAdd">저장</button> -->
                 </tr>
                 <tr>
                     <th>내용</th>
@@ -46,7 +53,6 @@
                     <!-- <td>
                         <div style="height: 150px;" id="editor"></div>
                     </td> -->
-                    
                 </tr>
             </table>
             <div>
@@ -76,7 +82,8 @@
                 let param = {
                     title: self.title,
                     userId : self.userId,
-                    contents : self.contents
+                    contents : self.contents,
+                    
                 };
                 $.ajax({
                     url: "board-add.dox",
@@ -85,8 +92,30 @@
                     data: param,
                     success: function (data) {
                         alert("저장되었습니다.");
-                        location.href="board-list.do"
+                        console.log(data.boardNo);
+                        
+                        var form = new FormData();
+	                    form.append( "file1",  $("#file1")[0].files[0] );
+	                    form.append( "boardNo",  data.boardNo); 
+	                    self.upload(form);  
+
+
+                        // location.href="board-list.do"
                     }
+                });
+            },
+            upload : function(form){
+	            var self = this;
+	            $.ajax({
+	            	 url : "/fileUpload.dox"
+	               , type : "POST"
+	               , processData : false
+	               , contentType : false
+	               , data : form
+	               , success:function(data) { 
+                        console.log(data);
+                        
+	                }	           
                 });
             },
             mounted: function () {

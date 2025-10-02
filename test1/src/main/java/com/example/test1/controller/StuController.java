@@ -1,8 +1,12 @@
 package com.example.test1.controller;
 
+import java.io.File;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.test1.dao.StudentService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 
@@ -90,6 +97,22 @@ public class	 StuController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = StudentService.updateStu(map);
+				
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/stu/deleteList.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+
+	@ResponseBody
+	public String deleteList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		String json = map.get("selectItem").toString(); 
+		ObjectMapper mapper = new ObjectMapper();
+		List<Object> list = mapper.readValue(json, new TypeReference<List<Object>>(){});
+		map.put("list", list);
+		System.out.println(map);
+		resultMap = StudentService.removeStuList(map);
 				
 		return new Gson().toJson(resultMap);
 	}

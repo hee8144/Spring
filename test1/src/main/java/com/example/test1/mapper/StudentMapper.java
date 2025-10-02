@@ -17,7 +17,11 @@ public interface StudentMapper {
 	
 	int removeStudent(HashMap<String, Object> map);
 	
+	int removeStudentList(HashMap<String, Object> map);
+	
 	Student stu(HashMap<String, Object> map);
 	
 	int updateStu(HashMap<String, Object> map);
+	
+	
 }

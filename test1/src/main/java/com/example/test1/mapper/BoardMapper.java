@@ -13,6 +13,10 @@ import com.example.test1.model.Student;
 public interface BoardMapper {
 	//게시글 삭제
 	int removeBoard(HashMap<String, Object> map);
+	
+	//게시글 리스트 삭제
+	
+	int removeBoardList(HashMap<String, Object> map);
 	// 게시글 목록
 	List<Board> boardList(HashMap<String, Object> map);
 	
@@ -38,5 +42,10 @@ public interface BoardMapper {
 	//댓글 작성
 	
 	int insertComment(HashMap<String, Object> map);
+	//첨부파일 업로드
+	int insertBoardImg(HashMap<String, Object> map);
+	
+	//첨부파일 목록
+	List<Board> selectFileList(HashMap<String, Object> map);
 	
 }

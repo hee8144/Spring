@@ -32,8 +32,9 @@
         <div>
 
             <div>
-                 <input v-if="!idFlg" v-model="id">
-                <input v-else v-model="id" disabled>
+                아이디:
+                 <!-- <input v-if="!idFlg" v-model="id">  -->
+                <input  v-model="id" >
                 <button @click="fnCheck">중복체크</button>
             </div>
 
@@ -47,6 +48,11 @@
 
             <div>
                  이름 : <input type="text" v-model="name">
+            </div>
+
+            <div>
+                파일첨부
+                    <input type="file" id="file1" name="file1" accept=".jpg , .png">
             </div>
 
            <div>
@@ -142,10 +148,10 @@
                     gender:self.gender,
                     status:self.status,
                 };
-                if(!idFlg){
-                    alert("중복체크를 해주세요");
-                    return;
-                }
+                // if(idFlg){
+                //     alert("중복체크를 해주세요");
+                //     return;
+                // }
                 
                 if(self.pwd != self.pwd2 ){
                     alert("비밀번호가 다릅니다.");
@@ -172,10 +178,10 @@
                     return;
                 }
 
-                if(!self.joinFlg){
-                    alert("문자 인증을 실행해주세요");
-                    return;
-                }
+                // if(!self.joinFlg){
+                //     alert("문자 인증을 실행해주세요");
+                //     return;
+                // }
 
                 $.ajax({
                     url: "/member/add.dox",
@@ -184,7 +190,13 @@
                     data: param,
                     success: function (data) {
                         alert("회원가입되었습니다.");
-                        location.href="/member/login.do";
+
+                        var form = new FormData();
+	                    form.append( "file1",  $("#file1")[0].files[0] );
+	                    form.append( "userId",  self.userId);
+	                    self.upload(form); 
+
+                        // location.href="/member/login.do";
                     }
                 });
             },
@@ -265,7 +277,21 @@
                 } else {
                     alert("문자인증에 실패했습니다.");
                 }
+            }, 
+            upload : function(form){
+	            var self = this;
+	            $.ajax({
+		            url : "/USERfileUpload.dox"
+	                , type : "POST"
+	                , processData : false
+	                , contentType : false
+	                , data : form
+	                , success:function(response) { 
+                        
+	                }	           
+                });
             }
+            
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

@@ -71,6 +71,7 @@
             </div>
             <table>
                 <tr>
+                    <th><input type="checkbox" v-model="all" @click="fnSelectAll"></th>
                     <th>번호</th>
                     <th>제목</th>
                     <th>작성자</th>
@@ -79,6 +80,7 @@
                     <th>삭제</th>
                 </tr>
                 <tr v-for="item in list">
+                    <td><input type="checkbox" :value="item.boardNo" v-model="selectItem"></td>
                     <td>{{item.boardNo}}</td>
                     <td>
                         <a href="javascript:;" @click="fnview(item.boardNo)">{{item.title}} </a>
@@ -95,6 +97,10 @@
                     </td>
                 </tr>
             </table>
+
+            <div>
+                <button @click="fnAllRemove">삭제</button>
+            </div>
         </div>
         <div>
             <a href="javascript:;" @click="fnMove(-1)">
@@ -124,10 +130,12 @@
             return {
                 // 변수 - (key : value)
                 list:[],
+                selectItem:[],
 				keyword:"",
                 kind:"",
                 sort:"CDATE",
                 keywordSort:"all",
+                all:false,
 
                 pageSize:5, // 한페이지에 출력할 개수
                 page:1,//현재페이지
@@ -193,7 +201,37 @@
                 self.page +=  num;
                 self.fnList();
             },
-            
+            fnSelectAll(){
+                let self = this;
+                console.log(self.selectItem);
+                
+                if(!self.all){
+                    self.selectItem =[];
+                    for(let i = 0; i<self.list.length ;i++){
+                        self.selectItem.push(self.list[i].boardNo);
+                    }
+                }else{
+                    for(let i = 0; i<self.list.length ;i++){
+                        self.selectItem= [];
+                    }
+                }
+            },
+            fnAllRemove(){
+                let self= this;
+                var fList = JSON.stringify(self.selectItem);
+                var param = {selectItem : fList};
+                $.ajax({
+                     url: "/board/deleteList.dox",
+                     dataType: "json",
+                     type: "POST",
+                     data: param,
+                     success: function (data) {
+                        alert("삭제되었습니다.");
+                        self.fnList();
+                     }
+                 });
+                
+            }
 
         }, // methods
         mounted() {

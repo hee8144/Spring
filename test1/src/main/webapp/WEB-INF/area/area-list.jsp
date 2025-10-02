@@ -40,10 +40,21 @@
 
             <div>
                 도/특별시 :
-                <select v-model="si" @change="fnList">
+                <select v-model="si" @change="fnGuList">
                     <option value="">:: 전체 ::</option>
                     <option :value="item.si" v-for="item in siList">{{item.si}}</option>
                 </select>
+                구:
+                <select v-model="gu" @change="fnDongList">
+                    <option value="">:: 전체 ::</option>
+                    <option :value="item.gu" v-for="item in guList">{{item.gu}}</option>
+                </select>
+                동:
+                <select v-model="dong" >
+                    <option value="">:: 전체 ::</option>
+                    <option :value="item.dong" v-for="item in dongList">{{item.dong}}</option>
+                </select>
+                <button @click="fnList">검색</button>
             </div>
             <table>
                 <tr>
@@ -93,7 +104,13 @@
                 index:10,
                 num:1,
                 siList:[],
-                si:""
+                guList:[],
+                dongList:[],
+
+                si:"",
+                gu:"",
+                dong:""
+                
             };
         },
         methods: {
@@ -104,6 +121,8 @@
                     pageSize:self.pageSize,
                     page : (self.page-1) * self.pageSize,
                     si:self.si,
+                    gu: self.gu,
+                    dong: self.dong
                 };
                 $.ajax({
                     url: "/area/list.dox",
@@ -125,11 +144,14 @@
             fnMove(num){
                 let self =this;
                 self.page += num;
+                
+                
                 self.fnList();
             },
             fnSiList(){
                 let self = this;
-                let param = {};
+                let param = {
+                };
                 $.ajax({
                     url: "/area/si.dox",
                     dataType: "json",
@@ -137,8 +159,41 @@
                     data: param,
                     success: function (data) {
                         self.siList = data.list;
-                        console.log(self.siList);
-                        
+                        self.guList = data.guList
+                        console.log(data);
+                    }
+                });
+            },
+             fnGuList(){
+                let self = this;
+                let param = {
+                    si : self.si
+                };
+                $.ajax({
+                    url: "/area/gu.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.guList = data.Gu
+                        console.log(data);
+                    }
+                });
+            },
+            fnDongList(){
+                let self = this;
+                let param = {
+                    si : self.si,
+                    gu : self.gu
+                };
+                $.ajax({
+                    url: "/area/dong.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        self.dongList = data.Dong
+                        console.log(data.Dong);
                     }
                 });
             }
@@ -147,7 +202,9 @@
             // 처음 시작할 때 실행되는 부분
             let self = this;
             self.fnList();  
-            self.fnSiList()
+            self.fnSiList();
+            self.fnGuList();
+            self.fnDongList();
         }
     });
 

@@ -37,7 +37,31 @@ public class AreaService {
 		
 		List<Area> list = AreaMapper.selectSiList(map);
 		
+		
+		
 		resultMap.put("list", list);
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getGuList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		List<Area> Gulist = AreaMapper.selectGuList(map);
+		
+		resultMap.put("Gu", Gulist);
+		resultMap.put("result", "success");
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getDongList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		List<Area> Donglist = AreaMapper.selectDongList(map);
+		
+		resultMap.put("Dong", Donglist);
 		resultMap.put("result", "success");
 		return resultMap;
 	}

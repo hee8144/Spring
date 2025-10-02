@@ -76,4 +76,14 @@ public class StudentService {
 		resultMap.put("result", "success");
 		return resultMap;
 	}
+	
+	public HashMap<String, Object> removeStuList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		int cnt = StudentMapper.removeStudentList(map);
+		
+		resultMap.put("result", "success");
+		return resultMap;
+	}
 }

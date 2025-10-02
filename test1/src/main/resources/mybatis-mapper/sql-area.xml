@@ -8,10 +8,18 @@
 		FROM AREA 
 		WHERE GU IS NOT NULL AND DONG IS NOT NULL
 		
-		<if test="si != '' and si !=null " >
-			AND SI LIKE '%' || #{si} || '%' 
+		<if test="si != '' and gu ==''" >
+		
+			AND SI =#{si}
 		</if>
 		
+		<if test="si != '' and gu !=''" >
+			AND SI =#{si} AND GU =#{gu}
+		</if>
+		
+		<if test="si != '' and gu !='' and dong != ''">
+			AND SI =#{si} AND GU =#{gu} AND DONG = #{dong}
+		</if>
 		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
 	</select>
 	
@@ -20,8 +28,17 @@
 		FROM AREA
 		WHERE GU IS NOT NULL AND DONG IS NOT NULL 
 		
-		<if test="si != '' and si !=null " >
-			AND SI LIKE '%' || #{si} || '%' 
+		<if test="si != '' and gu ==''" >
+		
+			AND SI =#{si}
+		</if>
+		
+		<if test="si != '' and gu !=''" >
+			AND SI =#{si} AND GU =#{gu}
+		</if>
+		
+		<if test="si != '' and gu !='' and dong != ''">
+			AND SI =#{si} AND GU =#{gu} AND DONG = #{dong}
 		</if>
 	</select>
 	
@@ -31,6 +48,24 @@
 		FROM AREA
 		WHERE GU IS NULL
 	
+	</select>
+	
+	<select id="selectGuList" parameterType="hashmap" resultType="com.example.test1.model.Area">
+	
+		SELECT GU 
+		FROM AREA 
+		WHERE GU IS NOT NULL
+		AND SI = #{si} 
+	 	GROUP BY GU
+	</select>
+	
+	<select id="selectDongList" parameterType="hashmap" resultType="com.example.test1.model.Area">
+	
+		SELECT DONG 
+		FROM AREA 
+		WHERE DONG IS NOT NULL
+		AND SI = #{si} AND GU = #{gu} 
+	 	
 	</select>
 </mapper>
 

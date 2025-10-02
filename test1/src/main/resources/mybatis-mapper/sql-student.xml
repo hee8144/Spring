@@ -18,6 +18,13 @@
 		DELETE FROM STUDENT WHERE STU_NO = #{stuNo}
 	</delete>
 	
+	<delete id="removeStudentList" parameterType="hashmap">
+		DELETE FROM STUDENT WHERE STU_NO IN 
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+	
 	<select id="stu" parameterType="hashmap" resultType="com.example.test1.model.Student" >
 		SELECT S.STU_NO, STU_DEPT, STU_NAME , AVG(ENR_GRADE) AS AVG_GRADE , (SELECT ROUND(AVG(ENR_GRADE),1)FROM ENROL) AS TOTAL_AVG
 		FROM STUDENT S
@@ -29,4 +36,7 @@
 	<update id="updateStu" parameterType="hashmap">
 		UPDATE STUDENT SET STU_DEPT = #{stuDept} WHERE STU_NO = #{stuNo}
 	</update>
+	
+	
+	
 </mapper>

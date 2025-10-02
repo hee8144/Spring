@@ -33,14 +33,16 @@
         <div>
             <table>
                 <tr>
+                    <th> <input type="checkbox" v-model="all" @click="fnSelectAll"> </th>
                     <th>학번</th>
                     <th>이름</th>
                     <th>학과</th>
                     <th>성별</th>
                     <th>학년</th>
                     <th>삭제</th>
-                </tr>
+                </tr>   
                 <tr v-for="item in list">
+                    <td><input type="checkbox" :value="item.stuNo" v-model="selectItem"></td>
                     <td>{{item.stuNo}}</td>
                     <td><a href="javascript:;" @click="fnview(item.stuNo)">{{item.stuName}}</a></td>
                     <td>{{item.stuDept}}</td>
@@ -49,6 +51,9 @@
                     <td><button @click="fnRemove(item.stuNo)">삭제</button></td>
                 </tr>
             </table>
+            <div>
+                <button @click="fnAllRemove">삭제</button>
+            </div>
         </div>
     </div>
 </body>
@@ -60,7 +65,9 @@
             return {
                 // 변수 - (key : value)
 				keyword:"",
-                list:[]
+                list:[],
+                selectItem:[],
+                all:false
             };
         },
         methods: {
@@ -107,6 +114,37 @@
             },
             fnview(stuNo){
                 pageChange("stu-view.do",{stuNo : stuNo});
+            },
+            fnAllRemove(){
+                let self=this;
+                console.log(self.selectItem);
+                var fList = JSON.stringify(self.selectItem);
+                var param = {selectItem : fList};
+
+                $.ajax({
+                    url: "/stu/deleteList.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {  
+                        alert("삭제되었습니다.");
+                        self.fnList();
+                    }
+                });
+            },
+            fnSelectAll(){
+                let self =this;
+                
+                if(!self.all){
+                    self.selectItem =[];
+                    for(let i = 0; i<self.list.length ;i++){
+                        self.selectItem.push(self.list[i].stuNo);
+                    }
+                }else{
+                    for(let i = 0; i<self.list.length ;i++){
+                        self.selectItem= [];
+                    }
+                }
             }
         }, // methods
         mounted() {

@@ -46,7 +46,10 @@
             </tr>
             <tr>
                 <th>내용</th>
-                <td>{{info.contents}}</td>
+                <td>
+                    <img :src="item.filePath" alt="" v-for="item in fileList">
+                    {{info.contents}}
+                </td>
             </tr>
             <tr>
                 <th>작성일</th>
@@ -87,7 +90,8 @@
                 info:{},
                 comment:{},
                 userId:"${sessionId}",
-                contents:""
+                contents:"",
+                fileList:{}
             };
         },
         methods: {
@@ -105,6 +109,7 @@
                         self.info=data.info;
                         self.comment = data.commentList;
                         console.log(data.commentList);
+                        self.fileList= data.fileList;
                         
                     }
                 });

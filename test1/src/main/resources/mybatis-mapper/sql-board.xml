@@ -20,6 +20,11 @@
 		INSERT INTO TBL_USER(USERID ,PASSWORD , NAME , ADDRESS , PHONE , GENDER , STATUS , CDATETIME , UDATETIME) 
 		VALUES(#{id} , #{pwd} , #{name}, #{addr} , #{phone} , #{gender} , #{status} , SYSDATE, SYSDATE)
 	</insert>
+	
+	<insert id="insertUserImg" parameterType="hashmap">
+		INSERT INTO TBL_USER_FILE 
+		VALUES(FILE_SEQ.NEXTVAL , #{userId} , #{path} , #{filename} , #{orgName} , #{size} , #{ext})
+	</insert>
 </mapper>
 
 
