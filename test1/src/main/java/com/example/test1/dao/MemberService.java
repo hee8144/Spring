@@ -15,6 +15,8 @@ import com.example.test1.model.Member;
 @Service
 public class MemberService {
 
+    private final BoardService boardService;
+
     private final AreaController areaController;
 
     private final StuController stuController;
@@ -25,9 +27,10 @@ public class MemberService {
 	@Autowired
 	HttpSession session;
 
-    MemberService(StuController stuController, AreaController areaController) {
+    MemberService(StuController stuController, AreaController areaController, BoardService boardService) {
         this.stuController = stuController;
         this.areaController = areaController;
+        this.boardService = boardService;
     }
 	public HashMap<String , Object> login(HashMap<String , Object> map){
 		
@@ -35,20 +38,58 @@ public class MemberService {
 		
 		Member member = memberMapper.memberLogin(map);
 		
-		String message = member != null ? "로그인성공" : "로그인실패!";
-		String result = member != null ? "success" : "fail";
+		String message =""; // 로그인 성공실패 여부 메세지
+		String result =""; //로그인 성공 실패 여부
 		
-		if(member != null) {
+				
+//		String message = member != null ? "로그인성공" : "로그인실패!";
+//		String idMsg = idCheck !=null ? "패스워드를 확인해주세요." : "아이디가 존재하지않습니다."; 
+//		String result = member != null ? "success" : "fail";
+		
+		
+		if(member != null && member.getCnt()>=5) {
+			message = "비밀번호를 5회이상 잘못 입력하셧습니다.";
+			result="fail";
+		}
+		else if(member != null) {
+			//cnt 값 0으로 초기화
+			memberMapper.cntInit(map);
+			message = "로그인성공";
+			result="success";
 			session.setAttribute("sessionId", member.getUserId());
 			session.setAttribute("sessionName", member.getName());
 			session.setAttribute("sessionStatus", member.getStatus());
+			
+			if(member.getStatus().equals("A")) {
+				resultMap.put("url", "/mgr/member/list.do");
+			}else {
+				resultMap.put("url", "/main.do");
+			}
+		}else {
+			Member idCheck = memberMapper.memberCheck(map);
+			if(idCheck != null) {
+				//로그인 실패시 cnt 1 증가 
+				
+				if(idCheck.getCnt() >= 5 ) {
+					message="비밀번호를 5회이상 잘못입력하셧습니다.";
+				}else {
+					memberMapper.cntIncrease(map);
+					message = "패스워드를 확인해주세요.";					
+				}
+				
+			}else {
+				message ="아이디가 존재하지않습니다.";
+			}
+			result="fail";
+			
 		}
-		
+
 		resultMap.put("msg", message);
 		resultMap.put("result", result);
 		
 		return resultMap;
 	}
+	
 	
 	public HashMap<String , Object> check(HashMap<String , Object> map){
 		
@@ -85,11 +126,11 @@ public class MemberService {
 		HashMap<String , Object> resultMap = new HashMap<String , Object>();
 	
 		int member = memberMapper.addmember(map);
-		List<Member> fileList = memberMapper.insertUserImg(map);
+		
 		
 		if(member < 1 ) {
 			resultMap.put("result", "success");
-			resultMap.put("fileList", fileList);
+		
 			
 		}else {
 			resultMap.put("result", "fail");
@@ -99,4 +140,45 @@ public class MemberService {
 		return resultMap;
 	}
 	
+	public void addMemberImg(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		int cnt = memberMapper.insertUserImg(map);
+	}
+	public HashMap<String, Object> memberList(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String , Object> resultMap = new HashMap<String , Object>();
+		
+		try {
+			List<Member> memberList= memberMapper.memberList(map);
+			resultMap.put("list", memberList);
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
+	}
+	
+	public  HashMap<String, Object> memberCntInit(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String , Object> resultMap = new HashMap<String , Object>();
+		
+		try {
+			int cnt = memberMapper.cntInit(map);
+			resultMap.put("result", "success");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());
+		}
+		
+		return resultMap;
+	}
+	
 }
+
+
+

@@ -16,5 +16,15 @@ public interface MemberMapper {
 	//회원가입
 	int addmember(HashMap<String , Object> map);
 	//유저사진
-	List<Member> insertUserImg(HashMap<String , Object> map); 
+	int insertUserImg(HashMap<String , Object> map);
+	
+	//유저리스트
+	List<Member> memberList(HashMap<String, Object> map); 
+	
+	//cnt 증가
+	int cntIncrease(HashMap<String , Object> map);
+	
+	//cnt 초기화
+	
+	int cntInit(HashMap<String , Object> map);
 }

@@ -44,6 +44,20 @@ public class MemberController {
         return "/jusoPopup";
     }
 	
+	@RequestMapping("/mgr/member/list.do") 
+    public String mgr(Model model) throws Exception{
+
+        return "mgr/member-list";
+    }
+	
+	@RequestMapping("/mgr/member/view.do") 
+    public String mgrView(HttpServletRequest request , Model model , @RequestParam HashMap<String, Object> map) throws Exception{
+		request.setAttribute("userId",map.get("userId"));
+
+        return "/mgr/member-view";
+    }
+
+	
 	@RequestMapping(value = "/member/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String userList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -74,6 +88,16 @@ public class MemberController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	@RequestMapping(value = "/mgr/member/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String memberList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = memberService.memberList(map);
+				
+		return new Gson().toJson(resultMap);
+	}
+	
 	@RequestMapping(value = "/member/add.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String add(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -83,6 +107,17 @@ public class MemberController {
 				
 		return new Gson().toJson(resultMap);
 	}
+	
+	@RequestMapping(value = "/mgr/member/init.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String init(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = memberService.memberCntInit(map);
+				
+		return new Gson().toJson(resultMap);
+	}
+	
 	
 	// controller
 		@RequestMapping("/USERfileUpload.dox")
@@ -121,6 +156,8 @@ public class MemberController {
 					
 					// insert 쿼리 실행
 				   // testService.addBoardImg(map);
+					
+					memberService.addMemberImg(map);
 					
 					model.addAttribute("filename", multi.getOriginalFilename());
 					model.addAttribute("uploadPath", file.getAbsolutePath());

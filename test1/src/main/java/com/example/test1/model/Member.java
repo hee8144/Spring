@@ -13,4 +13,6 @@ public class Member {
 	private String birth;
 	private String nickName;
 	private String status;
+	private int cnt;
+	private String CBIRTH;
 }
