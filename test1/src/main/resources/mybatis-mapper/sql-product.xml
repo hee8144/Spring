@@ -31,19 +31,32 @@
 		FROM TBL_MENU M1
 		GROUP BY MENU_PART
 		)R ON M.MENU_NO = R.MENU_PART
-	</select>
-	
-	<select id="selectAddMenuList" parameterType="hashmap" resultType="com.example.test1.model.Menu">
-		SELECT M.*, NVL(CNT,0) AS CNT 
-		FROM TBL_MENU M
-		LEFT JOIN (
-		SELECT MENU_PART ,COUNT(MENU_PART) AS CNT
-		FROM TBL_MENU M1
-		GROUP BY MENU_PART
-		)R ON M.MENU_NO = R.MENU_PART
-		WHERE DEPTH = 1
+		
+		<if test="depth !=null and depth !='' ">
+			WHERE DEPTH = #{depth}
+		</if>
 	</select>
 
+	<select id="selectProduct" parameterType="hashmap" resultType="com.example.test1.model.Product">
+		SELECT * FROM TBL_FOOD
+		WHERE FOOD_NO = #{foodNo}
+	</select>
+
+	<select id="selectProductImg" parameterType="hashmap" resultType="com.example.test1.model.Product">
+		SELECT * FROM TBL_FOOD_IMG
+		WHERE FOOD_NO = #{foodNo}
+	</select>
+	<insert id="addFood" parameterType="hashmap" useGeneratedKeys="true" keyColumn="FOOD_NO" keyProperty="foodNo">
+		INSERT INTO TBL_FOOD VALUES(FOOD_SEQ.NEXTVAL, #{foodName},#{price},#{foodKind},#{foodInfo},'Y',#{menuNo},#{menuPart})
+	</insert>
+	
+	<insert id="insertFoodImg" parameterType="hashmap">
+		INSERT INTO TBL_FOOD_IMG VALUES(FOODFILE_SEQ.NEXTVAL , #{foodNo} , #{path} , #{filename} , #{orgName} , #{size} , #{ext},'Y')
+	</insert>
+	
+	
+	
+	
 </mapper>
 
 
