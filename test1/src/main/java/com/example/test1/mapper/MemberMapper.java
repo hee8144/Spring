@@ -21,6 +21,14 @@ public interface MemberMapper {
 	//유저리스트
 	List<Member> memberList(HashMap<String, Object> map); 
 	
+	//비밀번호 유저체크
+	
+	Member selectMemberCheck(HashMap<String, Object> map);
+	
+	//비밀번호 변경
+	
+	int updatePwd(HashMap<String , Object> map);
+	
 	//cnt 증가
 	int cntIncrease(HashMap<String , Object> map);
 	

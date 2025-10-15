@@ -12,7 +12,7 @@
 .map_wrap, .map_wrap * {margin:0; padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
 .map_wrap {position:relative;width:100%;height:350px;}
 #category {position:absolute;top:10px;left:10px;border-radius: 5px; border:1px solid #909090;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);background: #fff;overflow: hidden;z-index: 2;}
-#category li {float:left;list-style: none;width:50px;px;border-right:1px solid #acacac;padding:6px 0;text-align: center; cursor: pointer;}
+#category li {float:left;list-style: none;width:50px;border-right:1px solid #acacac;padding:6px 0;text-align: center; cursor: pointer;}
 #category li.on {background: #eee;}
 #category li:hover {background: #ffe6e6;border-left:1px solid #acacac;margin-left: -1px;}
 #category li:last-child{margin-right:0;border-right:0;}
@@ -38,35 +38,35 @@
 </style>
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="map_wrap">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div id="map" style="width:500px;height:400px;"></div>
         <ul id="category">
-        <li id="BK9" data-order="0"> 
-            <span class="category_bg bank"></span>
-            은행
-        </li>       
-        <li id="MT1" data-order="1"> 
-            <span class="category_bg mart"></span>
-            마트
-        </li>  
-        <li id="PM9" data-order="2"> 
-            <span class="category_bg pharmacy"></span>
-            약국
-        </li>  
-        <li id="OL7" data-order="3"> 
-            <span class="category_bg oil"></span>
-            주유소
-        </li>  
-        <li id="CE7" data-order="4"> 
-            <span class="category_bg cafe"></span>
-            카페
-        </li>  
-        <li id="CS2" data-order="5"> 
-            <span class="category_bg store"></span>
-            편의점
-        </li>      
-    </ul>
+            <li id="BK9" data-order="0"> 
+                <span class="category_bg bank"></span>
+                은행
+            </li>       
+            <li id="MT1" data-order="1"> 
+                <span class="category_bg mart"></span>
+                마트
+            </li>  
+            <li id="PM9" data-order="2"> 
+                <span class="category_bg pharmacy"></span>
+                약국
+            </li>  
+            <li id="OL7" data-order="3"> 
+                <span class="category_bg oil"></span>
+                주유소
+            </li>  
+            <li id="CE7" data-order="4"> 
+                <span class="category_bg cafe"></span>
+                카페
+            </li>  
+            <li id="CS2" data-order="5"> 
+                <span class="category_bg store"></span>
+                편의점
+            </li>      
+        </ul>
         
     </div>
 </body>
@@ -106,14 +106,14 @@
                 // 지도에 표시되고 있는 마커를 제거합니다
                 this.removeMarker();
 
-                ps.categorySearch(this.currCategory, placesSearchCB, {useMapBounds:true}); 
+                this.ps.categorySearch(this.currCategory, this.placesSearchCB, {useMapBounds:true}); 
             },
 
             placesSearchCB(data, status, pagination) {
                 if (status === kakao.maps.services.Status.OK) {
                 
                     // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
-                    displayPlaces(data);
+                    this.displayPlaces(data);
                 } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                     // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
                 
@@ -134,13 +134,13 @@
                 for ( var i=0; i<places.length; i++ ) {
                 
                         // 마커를 생성하고 지도에 표시합니다
-                        var marker = addMarker(new kakao.maps.LatLng(places[i].y, places[i].x), order);
+                        var marker = this.addMarker(new kakao.maps.LatLng(places[i].y, places[i].x), order);
                 
                         // 마커와 검색결과 항목을 클릭 했을 때
                         // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
                         (function(marker, place) {
                             kakao.maps.event.addListener(marker, 'click', function() {
-                                displayPlaceInfo(place);
+                                this.displayPlaceInfo(place);
                             });
                         })(marker, places[i]);
                 }
@@ -159,7 +159,7 @@
                         image: markerImage 
                     });
                 
-                marker.setMap(map); // 지도 위에 마커를 표출합니다
+                marker.setMap(this.map); // 지도 위에 마커를 표출합니다
                 this.markers.push(marker);  // 배열에 생성된 마커를 추가합니다
                 
                 return marker;
@@ -191,26 +191,27 @@
                 this.placeOverlay.setMap(map);  
             },
             addCategoryClickEvent() {
-                var category = document.getElementById('category'),
-                    children = category.children;
-
-                for (var i=0; i<children.length; i++) {
-                    children[i].onclick = this.onClickCategory;
+                const category = document.getElementById('category');
+                const children = category.children;
+                for (let i = 0; i < children.length; i++) {
+                    children[i].onclick = (e) => this.onClickCategory(e);
                 }
             },
-            onClickCategory() {
-                var id = this.id,
-                    className = this.className;
 
+            onClickCategory(e) {
+                const el = e.currentTarget; // 클릭된 li
+                const id = el.id;
+                const className = el.className;
+            
                 this.placeOverlay.setMap(null);
-
+            
                 if (className === 'on') {
                     this.currCategory = '';
                     this.changeCategoryClass();
                     this.removeMarker();
                 } else {
                     this.currCategory = id;
-                    this.changeCategoryClass(this);
+                    this.changeCategoryClass(el);
                     this.searchPlaces();
                 }
             },

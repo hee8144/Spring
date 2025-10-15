@@ -3,6 +3,7 @@ package com.example.test1.dao;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.test1.controller.StuController;
 import com.example.test1.mapper.UserMapper;
@@ -15,6 +16,9 @@ public class UserService {
 	
 	@Autowired
 	UserMapper userMapper;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
     UserService(StuController stuController) {
         this.stuController = stuController;
@@ -25,6 +29,7 @@ public class UserService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println("service =>" + map);
 		User user = userMapper.userLogin(map);
+	
 		if(user !=null) {
 			System.out.println(user.getName());
 			System.out.println(user.getNickName());

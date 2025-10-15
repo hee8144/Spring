@@ -39,6 +39,9 @@
                 <a href="/member/join.do">
                     <button>회원가입</button>
                 </a>
+                <a href="/member/pwd.do">
+                    <button>비밀번호찾기</button>
+                </a>
             </div>
         </div>
 

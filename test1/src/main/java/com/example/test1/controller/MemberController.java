@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,9 @@ public class MemberController {
 	
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	
 	@RequestMapping("/member/login.do") 
     public String login(Model model) throws Exception{
@@ -57,7 +61,12 @@ public class MemberController {
         return "/mgr/member-view";
     }
 
-	
+	@RequestMapping("/member/pwd.do") 
+    public String pwd( Model model ) throws Exception{
+		
+
+        return "/member/pwd";
+    }
 	@RequestMapping(value = "/member/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String userList(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
@@ -104,7 +113,7 @@ public class MemberController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = memberService.addmember(map);
-				
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -114,6 +123,26 @@ public class MemberController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 		resultMap = memberService.memberCntInit(map);
+				
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/member/pwd.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String membercheck(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = memberService.getMemberCheckList(map);
+				
+		return new Gson().toJson(resultMap);
+	}
+	
+	@RequestMapping(value = "/member/updatePwd.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String updatePwd(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		resultMap = memberService.updatePwd(map);
 				
 		return new Gson().toJson(resultMap);
 	}
