@@ -119,3 +119,5 @@ public class BoardService {
 		int cnt = BoardMapper.insertBoardImg(map);
 	}
 }
+
+

@@ -16,6 +16,7 @@ public class Board {
 	private String commentCnt;
 	private String MENTID;
 	private String MENT;
+	private String contents2;
 	
 	
 	private String fileNo;

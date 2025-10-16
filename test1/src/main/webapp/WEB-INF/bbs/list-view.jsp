@@ -7,6 +7,7 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -24,22 +25,33 @@
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         {{sessionName}}님 환영합니다
         <div>
-            <a href="/board-list.do">
-                <button>게시판으로 이동</button>
-            </a>
+            <table>
+                <tr>
+                    <th>제목</th>
+                    <td>{{info.title}}</td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td>{{info.contents}}</td>
+                </tr>
+                <tr>
+                    <th>조회수</th>
+                    <td>{{info.hit}}</td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td>{{info.Cdate}}</td>
+                </tr>
+            </table>
 
-            <a href="/product.do">
-                <button>제품리스트로 이동</button>
-            </a>
-
-            <a href="/bbs/list.do">
-                <button>BBS게시판으로 이동</button>
-            </a>
-            <button @click="fnLogout">로그아웃</button>
+            <div>
+                <span v-if="userId == info.userId">
+                    <button @click="fnEdit">수정</button>
+                </span>
+            </div>
         </div>
+        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
     </div>
 </body>
 </html>
@@ -49,32 +61,38 @@
         data() {
             return {
                 // 변수 - (key : value)
-                sessionId : "${sessionId}",
-                sessionName : "${sessionName}",
-                sessionStatus : "${sessionStatus}"
+                bbsNum:"${bbsNum}",
+                userId:"${sessionId}",
+                info:{}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnLogout: function () {
+            fnInfo: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    bbsNo : self.bbsNum
+                };
                 $.ajax({
-                    url: "/member/logout.dox",
+                    url: "/bbs-info.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
-                    success: function (data) {
-                        alert(data.msg);
-                        location.href="/member/login.do"
+                    success: function (data) { 
+                        console.log(data);
+                        self.info = data.info;
                     }
                 });
             },
+            fnEdit(){
+                let self=this;
+                pageChange("list-edit.do",{bbsNum: self.bbsNum})
+            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            
+            self.fnInfo();
         }
     });
 

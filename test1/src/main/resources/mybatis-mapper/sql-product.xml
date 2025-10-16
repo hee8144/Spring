@@ -54,6 +54,9 @@
 		INSERT INTO TBL_FOOD_IMG VALUES(FOODFILE_SEQ.NEXTVAL , #{foodNo} , #{path} , #{filename} , #{orgName} , #{size} , #{ext},'Y')
 	</insert>
 	
+	<insert id="insertPaymentHistory" parameterType="hashmap">
+		INSERT INTO PAYMENT_HISTORY VALUES( #{impId} , #{id} , #{amount} , #{productNo} , SYSDATE)
+	</insert>
 	
 	
 	

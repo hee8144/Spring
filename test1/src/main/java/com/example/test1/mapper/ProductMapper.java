@@ -25,6 +25,8 @@ public interface ProductMapper {
 	
 	int insertFoodImg(HashMap<String, Object> map);
 	
+	//판매데이터
+	int insertPaymentHistory(HashMap<String, Object> map);
 	//제품 상세정보
 	
 	Product selectProduct(HashMap<String, Object> map);

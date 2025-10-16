@@ -29,7 +29,7 @@ public class UserService {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		System.out.println("service =>" + map);
 		User user = userMapper.userLogin(map);
-	
+		
 		if(user !=null) {
 			System.out.println(user.getName());
 			System.out.println(user.getNickName());

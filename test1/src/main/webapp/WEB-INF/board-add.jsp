@@ -49,10 +49,10 @@
                 </tr>
                 <tr>
                     <th>내용</th>
-                    <td><textarea v-model="contents" cols="50" rows="20"></textarea></td>
-                    <!-- <td>
-                        <div style="height: 150px;" id="editor"></div>
-                    </td> -->
+                    <!-- <td><textarea v-model="contents" cols="50" rows="20"></textarea></td> -->
+                    <td>    
+                        <div style="height: 350px" id="editor"></div>
+                    </td>
                 </tr>
             </table>
             <div>
@@ -118,9 +118,16 @@
 	                }	           
                 });
             },
-            mounted: function () {
-            // Quill 에디터 초기화
-            var quill = new Quill('#editor', {
+            
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+            if(self.sessionId == ""){
+                alert("로그인 후 이용해 주세요");
+                location.href='/member/login.do'
+            }
+             var quill = new Quill('#editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
@@ -137,16 +144,6 @@
             quill.on('text-change', function() {
                 self.contents = quill.root.innerHTML;
                 });
-            }
-        }, // methods
-        mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
-            if(self.sessionId == ""){
-                alert("로그인 후 이용해 주세요");
-                location.href='/member/login.do'
-            }
-            // self.mounted();
         }
     });
 

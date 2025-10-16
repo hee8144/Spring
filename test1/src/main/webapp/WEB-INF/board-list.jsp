@@ -203,7 +203,6 @@
             },
             fnSelectAll(){
                 let self = this;
-                console.log(self.selectItem);
                 
                 if(!self.all){
                     self.selectItem =[];
@@ -215,6 +214,7 @@
                         self.selectItem= [];
                     }
                 }
+                console.log(self.selectItem);
             },
             fnAllRemove(){
                 let self= this;

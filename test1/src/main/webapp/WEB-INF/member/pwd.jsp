@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -40,7 +41,7 @@
                 <button @click="fnAuth">인증</button>
             </div>
         </div>
-        <div v-else>
+            <div v-else>
             <div>
                 <label for="">비밀번호 : <input type="text" v-model="pwd1"></label>
             </div>
@@ -56,13 +57,14 @@
 </html>
 
 <script>
+    IMP.init("imp47205231");
     const app = Vue.createApp({
         data() {
             return {
                 // 변수 - (key : value)
                 authFlg:false,
                 userId:"",
-                name:"",
+                name:"",    
                 phone:"",
                 pwd1:"",
                 pwd2:"",
@@ -89,7 +91,8 @@
                         console.log(data);
                         if(data.result=="success"){
                             alert("인증되었습니다.")
-                            self.authFlg = true;
+                            self.fnCerti(); 
+                            
                         }else{
                             alert("사용자 정보를 찾을 수 없습니다.")
                         }
@@ -124,14 +127,35 @@
                         alert(data.msg)
                     }
                 });
+            },
+            fnCerti(){
+                // IMP.certification(param, callback) 호출
+                let self =this
+                IMP.certification(
+                  {
+                    // param
+                    channelKey: "channel-key-009bb29e-cec6-4dab-9462-fd4601658a54",
+                    merchant_uid: "merchant_" + new Date().getTime(), // 주문 번호
+                  },
+                  function (rsp) {
+                    // callback
+                    if (rsp.success) {
+                        // 인증 성공 시 로직
+                        alert("결제 성공");
+                        console.log(rsp);
+                        self.authFlg = true;
+                    } else {
+                      // 인증 실패 시 로직
+                      alert("결제 실패");
+                      console.log(rsp);
+                    }
+                  },
+                );
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
-            let self = this;
-            
-            
-            
+            let self = this;   
         }
     });
 

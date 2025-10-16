@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.test1.mapper.BbsMapper">
+	<select id="boardList" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT B.*, TO_CHAR(CDATETIME , 'YYYY-MM-DD') as Cdate  FROM TBL_BBS B
+			WHERE 1=1
+		
+			<if test="keywordSort =='all' ">
+				AND TITLE LIKE '%'|| #{keyword} || '%' OR USERID LIKE '%'|| #{keyword} || '%'
+			</if>
+			
+			<if test="keywordSort =='title' ">
+				AND TITLE LIKE '%'|| #{keyword} || '%'
+			</if>
+			
+			<if test="keywordSort =='userId' ">
+				AND USERID LIKE '%'|| #{keyword} || '%'
+			</if>
+			ORDER BY BBS_NUM DESC
+			
+			OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	 </select>
+	 
+	 <select id="countBbs" parameterType="hashmap" resultType="int">
+	 	SELECT count(*) cnt FROM TBL_BBS
+	 </select>
+	 
+	 <select id="bbsInfo" parameterType="hashmap" resultType="com.example.test1.model.Bbs">
+		SELECT B.*, TO_CHAR(CDATETIME , 'YYYY-MM-DD') as Cdate FROM TBL_BBS B
+			WHERE BBS_NUM = #{bbsNo}
+	 </select>
+	 
+	 <insert id="insertBbs" parameterType="hashmap" useGeneratedKeys="true" 
+	  	keyColumn="BBS_NUM" 
+	  	keyProperty="bbsNo">
+	 	INSERT INTO TBL_BBS VALUES(BBS_SEQ.NEXTVAL , #{title}, #{contents} ,'0' , #{id} , SYSDATE, SYSDATE)
+	 </insert>
+	 
+	 <insert id="insertBbsImg" parameterType="hashmap">
+	 	INSERT INTO TBL_BOARD_FILE VALUES(FILE_SEQ.NEXTVAL , #{bbsNo}, #{path}, #{filename} , #{org},#{size} ,#{etc})
+	 </insert>
+	 
+	 <delete id="deleteBbs" parameterType="hashmap">
+	 	DELETE FROM TBL_BBS
+		WHERE BBS_NUM = #{bbsNo} 
+	 </delete>
+	 
+	 <update id="updateBbs" parameterType="hashmap">
+	 	UPDATE TBL_BBS SET TITLE = #{title} , CONTENTS = #{contents} , UDATETIME = SYSDATE
+	 	WHERE BBS_NUM = #{bbsNo}
+	 </update>
+</mapper>
+
+
+
+

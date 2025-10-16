@@ -116,4 +116,23 @@ public class ProductService {
 		
 		return resultMap;
 	}
+	
+	public  HashMap<String, Object> insertProductHistory(HashMap<String, Object> map) {
+		// TODO Auto-generated method stub
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		try {
+			
+			int cnt =ProductMapper.insertPaymentHistory(map);
+			
+			resultMap.put("result", "success");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			resultMap.put("result", "fail");
+			System.out.println(e.getMessage());	
+		}
+		
+		return resultMap;
+	}
 }

@@ -25,26 +25,27 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-
-        <div>
-
-            <div>
-                <label for=""> 아이디 : <input type="text" v-model="id"></label>
-            </div>
-            <div>
-                <label for=""> 비밀번호 : <input type="password" v-model="pwd"></label>
-            </div>
-            <div>
-                <button @click="fnLogin">로그인</button>
-                <a href="/member/join.do">
-                    <button>회원가입</button>
-                </a>
-                <a href="/member/pwd.do">
-                    <button>비밀번호찾기</button>
-                </a>
-            </div>
-        </div>
-
+         <table>
+            <tr>
+                <th>제목</th>
+                <td><input type="text" v-model="title"></td>
+            </tr>
+            <tr>
+                <th>아이디</th>    
+                <td>{{userId}}</td>
+            </tr>
+            <tr>
+                <th>파일</th>
+                <td><input type="file" id="file1" name="file1" accept=".jpg , .png"></td>
+            </tr>
+            <tr>
+                <th>내용</th>
+                <td><input type="text" v-model="contents"></td>
+            </tr>
+         </table>
+         <div>
+            <button @click="fnAdd">글쓰기</button>
+         </div>
     </div>
 </body>
 </html>
@@ -54,34 +55,49 @@
         data() {
             return {
                 // 변수 - (key : value)
-                id:"",
-                pwd:"",
+                userId :"${sessionId}",
+                title:"",
+                contents:""
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnLogin: function () {
+            fnAdd: function () {
                 let self = this;
                 let param = {
-                    id:self.id,
-                    pwd : self.pwd
+                    id:self.userId,
+                    title:self.title,
+                    contents:self.contents
                 };
                 $.ajax({
-                    url: "/member/login.dox",
+                    url: "/bbs-add.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
+                        alert("작성되었습니다.")
                         console.log(data);
-                        alert(data.msg)
-                        if(data.result == "success"){
-                            location.href=data.url;
-                            
-                        }
+                        
+	                    var form = new FormData();
+	                    form.append( "file1",  $("#file1")[0].files[0] );
+	                    form.append( "bbsNo",  data.bbsNo); // 임시 pk
+	                    self.upload(form);  
                     }
                 });
             },
-           
+             upload (form){
+	            let self = this;
+	             $.ajax({
+	            	 url : "/bbs/fileUpload.dox"
+	               , type : "POST"
+	               , processData : false
+	               , contentType : false
+	               , data : form
+	               , success:function(response) { 
+                    location.href='/bbs/list.do';
+	               }	           
+            });
+            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

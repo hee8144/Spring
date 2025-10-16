@@ -96,7 +96,7 @@
 	  	useGeneratedKeys="true" 
 	  	keyColumn="BOARDNO" 
 	  	keyProperty="boardNo" >
-		INSERT INTO TBL_BOARD VALUES(B_SEQ.NEXTVAL, #{title}, #{contents}, #{userId}, 0, 0, 1 , SYSDATE, SYSDATE)
+		INSERT INTO TBL_BOARD VALUES(B_SEQ.NEXTVAL, #{title}, '', #{userId}, 0, 0, 1 , SYSDATE, SYSDATE , #{contents})
 	</insert>
 	
 	<insert id="insertBoardImg" parameterType="hashmap">

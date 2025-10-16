@@ -48,7 +48,10 @@
                 <th>내용</th>
                 <td>
                     <img :src="item.filePath" alt="" v-for="item in fileList">
-                    {{info.contents}}
+                    <div v-html="info.contents2">
+                        
+                    </div>
+                    <!-- {{info.contents2}} -->
                 </td>
             </tr>
             <tr>
