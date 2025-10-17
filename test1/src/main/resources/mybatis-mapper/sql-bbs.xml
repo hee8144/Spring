@@ -24,7 +24,8 @@
 	 </select>
 	 
 	 <select id="countBbs" parameterType="hashmap" resultType="int">
-	 	SELECT count(*) cnt FROM TBL_BBS
+	 	SELECT count(*) cnt FROM TBL_BBS 
+	 	WHERE TITLE LIKE '%'|| #{keyword} || '%' OR USERID LIKE '%'|| #{keyword} || '%'
 	 </select>
 	 
 	 <select id="bbsInfo" parameterType="hashmap" resultType="com.example.test1.model.Bbs">

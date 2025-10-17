@@ -190,7 +190,9 @@ public class MemberService {
 		
 		try {
 			List<Member> memberList= memberMapper.memberList(map);
+			int cnt = memberMapper.cntMemberList(map);
 			resultMap.put("list", memberList);
+			resultMap.put("cnt", cnt);
 			resultMap.put("result", "success");
 		} catch (Exception e) {
 			// TODO: handle exception

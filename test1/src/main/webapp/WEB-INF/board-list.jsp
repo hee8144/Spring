@@ -60,7 +60,7 @@
                     <option value="1">:: 공지사항 ::</option>
                     <option value="2">:: 자유계시판 ::</option>
                     <option value="3">:: 문의계시판 ::</option>
-                </select>
+                </select>   
 
                 <select  v-model="sort" @change="fnList">
                     <option value="BOARDNO">:: 번호순 ::</option>
@@ -125,6 +125,8 @@
 </html>
 
 <script>
+
+    
     const app = Vue.createApp({
         data() {
             return {

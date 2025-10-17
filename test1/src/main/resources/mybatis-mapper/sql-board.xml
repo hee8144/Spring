@@ -39,10 +39,22 @@
 			DECODE( BIRTH,null,'정보없음',
 				SUBSTR(BIRTH,3,2) || '.' || SUBSTR(BIRTH,5,2) || '.' || SUBSTR(BIRTH,7,2) ) CBIRTH
 		FROM TBL_USER U
-		<if test="userId !=null AND userId !=''">
-		WHERE USERID = #{id}
+		WHERE NAME LIKE '%' || #{keyword} || '%' OR NICKNAME LIKE '%' || #{keyword} || '%'
+		<if test="userId !=null and userId !=''">
+		AND USERID = #{id}
+		</if>
+		OFFSET #{page} ROWS FETCH NEXT #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="cntMemberList" parameterType="hashmap" resultType="int">
+		SELECT 
+			 COUNT(*) cnt
+		FROM TBL_USER U
+		WHERE NAME LIKE '%' || #{keyword} || '%' OR NICKNAME LIKE '%' || #{keyword} || '%'
+		<if test="userId !=null and userId !=''">
 		</if>
 	</select>
+	
 	
 	<update id="cntIncrease" parameterType="hashmap">
 	<!--로그인실패시 -->

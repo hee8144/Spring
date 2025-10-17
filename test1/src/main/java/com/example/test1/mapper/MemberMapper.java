@@ -21,6 +21,9 @@ public interface MemberMapper {
 	//유저리스트
 	List<Member> memberList(HashMap<String, Object> map); 
 	
+	//유저리스트 개수
+	int cntMemberList(HashMap<String, Object> map);
+	
 	//비밀번호 유저체크
 	
 	Member selectMemberCheck(HashMap<String, Object> map);

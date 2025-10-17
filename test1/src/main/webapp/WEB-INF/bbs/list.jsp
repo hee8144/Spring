@@ -185,9 +185,7 @@
                 let self=this;
                 self.page = num;
                 self.fnList();
-            }
-
-            
+            }    
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
