@@ -51,7 +51,8 @@
                 // 변수 - (key : value)
                 sessionId : "${sessionId}",
                 sessionName : "${sessionName}",
-                sessionStatus : "${sessionStatus}"
+                sessionStatus : "${sessionStatus}",
+                code:""
             };
         },
         methods: {
@@ -66,15 +67,38 @@
                     data: param,
                     success: function (data) {
                         alert(data.msg);
-                        location.href="/member/login.do"
+                        location.href="/member/login.do";
+                        
                     }
                 });
             },
+            fnkakao() {
+            	var self = this;
+            	var nparmap = {
+            		code : self.code
+            	};
+            	$.ajax({
+            		url: "/kakao.dox",  
+            		dataType: "json",
+            		type: "POST",
+            		data: nparmap,
+            		success: function (data) {
+            			console.log(data);
+                        self.sessionName = data.properties.nickname;
+                        
+            		}
+            	});
+            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            
+            const queryParams = new URLSearchParams(window.location.search);
+            self.code = queryParams.get('code') || ''; 
+
+            if(self.code != null){
+                self.fnkakao();
+            }
         }
     });
 

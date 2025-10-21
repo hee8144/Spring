@@ -11,6 +11,7 @@
     <title>쇼핑몰 헤더</title>
     <link rel="stylesheet" href="/css/product-style.css">
     <script src="/js/page-change.js"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     
 </head>
 
@@ -36,7 +37,7 @@
                     </li>
                 </ul>
             </nav>
-           
+            <div id="google_translate_element"></div>
             <div class="search-bar">
                 <input type="text" placeholder="상품을 검색하세요..." v-model="keyWord" @keyup.enter="fnFoodList()">
                 <button @click="fnFoodList()" >검색</button>
@@ -120,6 +121,7 @@
         mounted() {
             var self = this;
             self.fnFoodList();
+            new google.translate.TranslateElement({pageLanguage: 'ko',includedLanguages : 'ko,en,ja',autoDisplay: false}, 'google_translate_element');
         }
     });
     app.mount('#app');
